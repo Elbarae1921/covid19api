@@ -11,3 +11,5 @@
 ```node server.js```
 
 access `http://localhost:5000`
+
+example `http://localhost:5000/Morocco`
