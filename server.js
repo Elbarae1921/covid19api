@@ -9,9 +9,9 @@ const server = express();
 server.get('/', (req, res) => {
     Scraper.getDataArray().then(data => {
         res.json({
-            "Total Cases": data[0],
-            "Total Recoveries": data[2],
-            "Total Deaths": data[1]
+            "confirmed": data[0],
+            "recoveries": data[2],
+            "deaths": data[1]
         });
     })
 });
@@ -26,13 +26,13 @@ server.get('/:country', (req, res) => {
                     Scraper.getCountryDataArray(country)
                         .then(data => {
                             res.json({
-                                "Country": country,
-                                "Total Cases": data[0],
-                                "New Cases": data[1],
-                                "Total Deaths": data[2],
-                                "New Deaths": data[3],
-                                "Total Recovered": data[4],
-                                "Active Cases": data[5]
+                                "country": country,
+                                "confirmed": data[0],
+                                "new_cases": data[1],
+                                "deaths": data[2],
+                                "new_deaths": data[3],
+                                "recoveries": data[4],
+                                "active_cases": data[5]
                             });
                         });
                 }
