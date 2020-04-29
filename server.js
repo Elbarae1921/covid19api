@@ -9,11 +9,15 @@ const server = express();
 server.get('/', (req, res) => {
     Scraper.getDataArray().then(result => {
         const data = result.map(r => r.replace(/ /g, ''));
-        res.json({
-            "confirmed": data[0],
-            "recoveries": data[2],
-            "deaths": data[1]
-        });
+        Scraper.lastUpdated()
+            .then(lu => {
+                res.json({
+                    "confirmed": data[0],
+                    "recoveries": data[2],
+                    "deaths": data[1],
+                    "last_updated": lu
+                });
+            });    
     })
 });
 
@@ -38,15 +42,19 @@ server.get('/:country', (req, res) => {
                     Scraper.getCountryDataArray(query)
                         .then(result => {
                             const data = result.map(r => r.replace(/ /g, ''));
-                            res.json({
-                                "country": query,
-                                "confirmed": data[0],
-                                "new_cases": data[1],
-                                "deaths": data[2],
-                                "new_deaths": data[3],
-                                "recoveries": data[4],
-                                "active_cases": data[5]
-                            });
+                            Scraper.lastUpdated()
+                                .then(lu => {
+                                    res.json({
+                                        "country": query,
+                                        "confirmed": data[0],
+                                        "new_cases": data[1],
+                                        "deaths": data[2],
+                                        "new_deaths": data[3],
+                                        "recoveries": data[4],
+                                        "active_cases": data[5],
+                                        "last_updated": lu
+                                    });
+                                });
                         });
                 }
                 else {

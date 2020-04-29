@@ -87,8 +87,20 @@ const getCountryDataArray = async country => {
     });
 }
 
+const lastUpdated = async () => {
+    return new Promise(resolve => {
+        rp(url)
+            .then(html => {
+                const div = $(".content-inner", html);
+                const lu = div.get(0).children[9].children[0].data;
+                resolve(lu.split(' ').slice(2).join(' ').trim());
+            });
+    });
+}
+
 module.exports = {
     getCountriesArray,
     getDataArray,
-    getCountryDataArray
+    getCountryDataArray,
+    lastUpdated
 }
