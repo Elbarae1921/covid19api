@@ -7,7 +7,8 @@ const PORT = process.env.PORT || 5000;
 const server = express();
 
 server.get('/', (req, res) => {
-    Scraper.getDataArray().then(data => {
+    Scraper.getDataArray().then(result => {
+        const data = result.map(r => r.replace(/ /g, ''));
         res.json({
             "confirmed": data[0],
             "recoveries": data[2],
@@ -16,17 +17,29 @@ server.get('/', (req, res) => {
     })
 });
 
+server.get('/countries', (req, res) => {
+    Scraper.getCountriesArray()
+        .then(result => {
+            const data = result.filter(r => r !== '' && r !== ' ').map(r => r.trim());
+            res.json({
+                countries: data
+            });
+        });
+})
+
 server.get('/:country', (req, res) => {
     let country = req.params.country;
     if (country) {
         country = country.replace(/\s/g, "");
         Scraper.getCountriesArray()
             .then(countries => {
-                if (countries.find(c => c == country)) {
-                    Scraper.getCountryDataArray(country)
-                        .then(data => {
+                const query = countries.find(c => c.replace(/\s/g, "") === country);
+                if (query) {
+                    Scraper.getCountryDataArray(query)
+                        .then(result => {
+                            const data = result.map(r => r.replace(/ /g, ''));
                             res.json({
-                                "country": country,
+                                "country": query,
                                 "confirmed": data[0],
                                 "new_cases": data[1],
                                 "deaths": data[2],
