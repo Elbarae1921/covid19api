@@ -21,12 +21,16 @@ server.get('/', (req, res) => {
     })
 });
 
+server.get('/map', async (req, res) => {
+    const d = await Scraper.mapCountriesData(await Scraper.getCountriesArray());
+    res.send([...d]);
+});
+
 server.get('/countries', (req, res) => {
     Scraper.getCountriesArray()
-        .then(result => {
-            const data = result.filter(r => r !== '' && r !== ' ').map(r => r.trim());
+        .then(countries => {
             res.json({
-                countries: data
+                countries
             });
         });
 })
@@ -79,8 +83,16 @@ server.get('/*', (req, res) => {
                 desc: "Coronavirus stats worldwide"
             },
             {
+                route: "/countries",
+                desc: "Available countries"
+            },
+            {
                 route: "/:country",
                 desc: "Coronavirus stats in the specified country"
+            },
+            {
+                route: "/map",
+                desc: "Coronavirus stats in all the available countries mapped in one array"
             }
         ]
     });

@@ -22,7 +22,7 @@ const getCountriesArray = () => {
                     }
                 });
                 console.log("scraping done!");
-                resolve(countriesData);
+                resolve(countriesData.filter(r => r !== '' && r !== ' ').map(r => r.trim()));
             })
             .catch(err => {
                 console.log(err);
@@ -98,9 +98,39 @@ const lastUpdated = async () => {
     });
 }
 
+const mapCountriesData = async countries => {
+    return new Promise(resolve => {
+        console.log("scraping the page...");
+        rp(url)
+            .then(html => {
+                const dataMap = new Map();
+                const data = $(selector, html);
+                var vals = data.get(0).children.filter(x => x.hasOwnProperty('children'));
+                var i = 0;
+                for(let country of countries)
+                {
+                    dataMap.set(country, [vals[0].children[13].hasOwnProperty("children") ? vals[0].children[13].children.length > 0 ?  vals[0].children[13].children[0].data : 0 : 0, vals[0].children[7].hasOwnProperty("children") ? vals[0].children[7].children.length > 0 ?  vals[0].children[7].children[0].data : 0 : 0, vals[0].children[11].hasOwnProperty("children") ? vals[0].children[11].children.length > 0 ?  vals[0].children[11].children[0].data : "" : ""]);
+                    /*vals[0].children[3].children
+                    vals[0].children[7].children
+                    vals[0].children[11].children
+                    vals[0].children[13].children
+                    vals[0].children[15].children*/
+                    i++;
+                }
+                console.log("scraping done!");
+                dataMap.shift();
+                resolve(dataMap);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    });
+}
+
 module.exports = {
     getCountriesArray,
     getDataArray,
     getCountryDataArray,
-    lastUpdated
+    lastUpdated,
+    mapCountriesData
 }
