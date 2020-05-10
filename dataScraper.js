@@ -103,6 +103,7 @@ const mapCountriesData = async countries => {
         console.log("scraping the page...");
         rp(url)
             .then(html => {
+                countries.shift();
                 const dataMap = new Map();
                 const data = $(selector, html);
                 var vals = data.get(0).children.filter(x => x.hasOwnProperty('children'));
@@ -118,7 +119,6 @@ const mapCountriesData = async countries => {
                     i++;
                 }
                 console.log("scraping done!");
-                dataMap.shift();
                 resolve(dataMap);
             })
             .catch(err => {
