@@ -56,6 +56,7 @@ server.get('/:country', (req, res) => {
                                         "new_deaths": data[3],
                                         "recoveries": data[4],
                                         "active_cases": data[5],
+                                        "serious_cases": data[6],
                                         "last_updated": lu
                                     });
                                 });
