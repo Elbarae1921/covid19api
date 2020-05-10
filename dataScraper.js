@@ -106,11 +106,31 @@ const mapCountriesData = async countries => {
                 countries.shift();
                 const dataMap = new Map();
                 const data = $(selector, html);
-                var vals = data.get(0).children.filter(x => x.hasOwnProperty('children'));
-                var i = 0;
+                var i = 7;
                 for(let country of countries)
                 {
-                    dataMap.set(country, [vals[0].children[13].hasOwnProperty("children") ? vals[0].children[13].children.length > 0 ?  vals[0].children[13].children[0].data : 0 : 0, vals[0].children[7].hasOwnProperty("children") ? vals[0].children[7].children.length > 0 ?  vals[0].children[7].children[0].data : 0 : 0, vals[0].children[11].hasOwnProperty("children") ? vals[0].children[11].children.length > 0 ?  vals[0].children[11].children[0].data : "" : ""]);
+                    let vals = data.get(0).children.filter(x => x.hasOwnProperty('children')).filter(x => {
+                        if (!x.children[1].children[0].hasOwnProperty("children")) {
+                            if(x.children[1].children[0].data.trim() == country)
+                                return true;
+                            else
+                                return false
+                        }
+                        else {
+                            if(x.children[1].children[0].children[0].data.trim() == country)
+                                return true;
+                            else
+                                return false;
+                        }
+                    });
+
+                    let cases = vals[0].children[3].hasOwnProperty("children") ? vals[0].children[3].children.length > 0 ?  vals[0].children[3].children[0].data : "" : "";
+
+                    let deaths = vals[0].children[7].hasOwnProperty("children") ? vals[0].children[7].children.length > 0 ?  vals[0].children[7].children[0].data : "" : "";
+
+                    let recoveries = vals[0].children[11].hasOwnProperty("children") ? vals[0].children[11].children.length > 0 ?  vals[0].children[11].children[0].data : "" : "";
+
+                    dataMap.set(country, [cases, deaths, recoveries]);
                     /*vals[0].children[3].children
                     vals[0].children[7].children
                     vals[0].children[11].children
