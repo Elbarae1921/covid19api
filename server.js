@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const Scraper = require('./dataScraper');
+const isoMap = new Map(require('./iso3.json'));
 
 const PORT = process.env.PORT || 5000;
 
@@ -26,6 +27,42 @@ server.get('/map', async (req, res) => {
     res.send([...d]);
 });
 
+server.get('/map2', async (req, res) => {
+    const d = await Scraper.mapCountriesDataIso(await Scraper.getCountriesArray());
+    res.send([...d]);
+});
+
+server.get('/help', (req, res) => {
+    res.json({
+        routes: [
+            {
+                route: "/",
+                desc: "Coronavirus stats worldwide"
+            },
+            {
+                route: "/countries",
+                desc: "Available countries"
+            },
+            {
+                route: "/:country",
+                desc: "Coronavirus stats in the specified country"
+            },
+            {
+                route: "/map",
+                desc: "Coronavirus stats in all the available countries mapped in a key-value pair array with the country's name as the key"
+            },
+            {
+                route: "/map",
+                desc: "Coronavirus stats in all the available countries mapped in a key-value pair array with the country's ISO_A3 code as the key"
+            },
+            {
+                route: "/help",
+                desc: "Help :)"
+            }
+        ]
+    });
+});
+
 server.get('/countries', (req, res) => {
     Scraper.getCountriesArray()
         .then(countries => {
@@ -45,11 +82,13 @@ server.get('/:country', (req, res) => {
                 if (query) {
                     Scraper.getCountryDataArray(query)
                         .then(result => {
+                            console.log(result);
                             const data = result.map(r => r.replace(/ /g, ''));
                             Scraper.lastUpdated()
                                 .then(lu => {
                                     res.json({
                                         "country": query,
+                                        "iso3": isoMap.get(query),
                                         "confirmed": data[0],
                                         "new_cases": data[1],
                                         "deaths": data[2],
@@ -97,7 +136,15 @@ server.get('/*', (req, res) => {
             },
             {
                 route: "/map",
-                desc: "Coronavirus stats in all the available countries mapped in one array"
+                desc: "Coronavirus stats in all the available countries mapped in a key-value pair array with the country's name as the key"
+            },
+            {
+                route: "/map",
+                desc: "Coronavirus stats in all the available countries mapped in a key-value pair array with the country's ISO_A3 code as the key"
+            },
+            {
+                route: "/help",
+                desc: "Help :)"
             }
         ]
     });
