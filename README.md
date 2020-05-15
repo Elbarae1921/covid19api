@@ -3,6 +3,8 @@
 
 This api scrapes data from [worldometers](https://www.worldometers.info/coronavirus/) for every request which makes the provided data very accurate at the cost of loading time.
 
+The api will crash in the future since the (website)[https://www.worldometers.info/coronavirus/] gets design/layout changes almost every week, but i'm gonna keep an eye and update the scraper whenever some big change -that might cause problems- happens :).
+
 # Installation
 
 ```npm install```
