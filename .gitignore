@@ -1,2 +1,6 @@
 node_modules/
-script.js
+iso3gen.js
+compareMissing.js
+missing.json
+generateCSV.js
+out.csv
