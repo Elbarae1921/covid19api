@@ -134,7 +134,6 @@ const mapCountriesData = async countries => {
         console.log("scraping the page...");
         rp(url)
             .then(html => {
-                countries.shift();
                 const dataMap = new Map();
                 const data = $(selector, html);
                 var i = 7;

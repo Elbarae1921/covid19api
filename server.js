@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 5000;
 
 const server = express();
 
-server.get('/', (req, res) => {
+server.get('/', (_, res) => {
     Scraper.getDataArray().then(result => {
         const data = result.map(r => r.replace(/ /g, ''));
         Scraper.lastUpdated()
@@ -22,17 +22,17 @@ server.get('/', (req, res) => {
     })
 });
 
-server.get('/map', async (req, res) => {
+server.get('/map', async (_, res) => {
     const d = await Scraper.mapCountriesData(await Scraper.getCountriesArray());
-    res.send([...d]);
+    res.send([...d].sort((x,y) => y[1][0] - x[1][0]));
 });
 
-server.get('/map2', async (req, res) => {
+server.get('/map2', async (_, res) => {
     const d = await Scraper.mapCountriesDataIso(await Scraper.getCountriesArray());
     res.send([...d]);
 });
 
-server.get('/help', (req, res) => {
+server.get('/help', (_, res) => {
     res.json({
         routes: [
             {
@@ -63,7 +63,7 @@ server.get('/help', (req, res) => {
     });
 });
 
-server.get('/countries', (req, res) => {
+server.get('/countries', (_, res) => {
     Scraper.getCountriesArray()
         .then(countries => {
             res.json({
@@ -119,7 +119,7 @@ server.get('/:country', (req, res) => {
     }
 });
 
-server.get('/*', (req, res) => {
+server.get('/*', (_, res) => {
     res.json({
         routes: [
             {
