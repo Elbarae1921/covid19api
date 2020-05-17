@@ -29,7 +29,7 @@ server.get('/map', async (_, res) => {
 
 server.get('/map2', async (_, res) => {
     const d = await Scraper.mapCountriesDataIso(await Scraper.getCountriesArray());
-    res.send([...d]);
+    res.send([...d].sort((x,y) => y[1][0] - x[1][0]));
 });
 
 server.get('/help', (_, res) => {
