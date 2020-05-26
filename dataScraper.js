@@ -1,3 +1,4 @@
+const fs = require('fs/promises');
 const rp = require("request-promise");
 const $ = require("cheerio");
 const iso3 = new Map(require('./iso3.json'));
@@ -244,11 +245,18 @@ const mapCountriesDataIso = async countries => {
     });
 }
 
+const getDaily = async () => {
+    const buffer = await fs.readFile('daily.json');
+    const dailyData = JSON.parse(buffer);
+    return dailyData;
+}
+
 module.exports = {
     getCountriesArray,
     getDataArray,
     getCountryDataArray,
     lastUpdated,
     mapCountriesData,
-    mapCountriesDataIso
+    mapCountriesDataIso,
+    getDaily
 }

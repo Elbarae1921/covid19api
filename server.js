@@ -1,7 +1,11 @@
 require('dotenv').config();
 const express = require('express');
+const schedule = require('node-schedule');
+const updateDaily = require('./updateDaily');
 const Scraper = require('./dataScraper');
 const isoMap = new Map(require('./iso3.json'));
+
+const job = schedule.scheduleJob({hour: 23, minute: 58}, updateDaily);
 
 const PORT = process.env.PORT || 5000;
 
@@ -31,6 +35,14 @@ server.get('/map2', async (_, res) => {
     const d = await Scraper.mapCountriesDataIso(await Scraper.getCountriesArray());
     res.send([...d].sort((x,y) => y[1][0] - x[1][0]));
 });
+
+server.get('/daily', async (_, res) => {
+    const data = await Scraper.getDaily();
+    res.json({
+        notes: ["The date property is a 13 digits unix timestamp.", "Daily data is updated every day at 23:58PM GMT+0"],
+        dailyData: data.sort((x,y) => y.date - x.date)
+    });
+})
 
 server.get('/help', (_, res) => {
     res.json({
@@ -70,7 +82,7 @@ server.get('/countries', (_, res) => {
                 countries
             });
         });
-})
+});
 
 server.get('/:country', (req, res) => {
     let country = req.params.country;
