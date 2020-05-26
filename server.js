@@ -37,7 +37,18 @@ server.get('/map2', async (_, res) => {
 });
 
 server.get('/daily', async (_, res) => {
-    await Scraper.getDaily(res);
+    try {
+        const data = await Scraper.getDaily();
+        res.json({
+            notes: ["The date property is a 13 digits unix timestamp.", "Daily data is updated every day at 23:58PM GMT+0"],
+            dailyData: data.sort((x,y) => y.date - x.date)
+        });
+    }
+    catch (e) {
+        console.log(`Failed to fetch daily data : ${e}`);
+        res.json({error: "Could not fetch daily data."});
+    }
+    
 })
 
 server.get('/help', (_, res) => {
