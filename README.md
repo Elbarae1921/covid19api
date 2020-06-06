@@ -13,7 +13,7 @@ The daily data in /daily is updated only once a day at 23:58PM GMT0 which makes 
 
 # Usage
 
-Running this requires version ^14.3 of nodejs ([current](https://nodejs.org/en/download/current/)), make sure you have it.
+Running this requires version ^14.3 of nodejs ([current](https://nodejs.org/en/download/current/)) to use some of its latest features, make sure you have it.
 
 ```node server.js```
 
