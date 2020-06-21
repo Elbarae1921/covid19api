@@ -19,6 +19,8 @@ const getCountriesArray = () => {
                     .filter(x => Boolean(x.children.length))
                     .slice(8)
                     .map(x => {
+                        // old logic for fetching countries just in case they change the layout back
+
                         // if (!x.children[1].children[0].hasOwnProperty("children")) {
                         //     return x.children[1].children[0].data.trim();
                         // }
@@ -66,6 +68,8 @@ const getCountryDataArray = async country => {
                     .filter(x => Boolean(x.children.length))
                     .slice(8)
                     .filter(x => {
+                        // old logic for fetching cases data just in case they change the layout back
+                        
                         // if (!x.children[1].children[0].hasOwnProperty("children")) {
                         //     if(x.children[1].children[0].data.trim() == country)
                         //         return true;
@@ -145,6 +149,8 @@ const mapCountriesData = async countries => {
                         .filter(x => Boolean(x.children.length))
                         .slice(8)
                         .filter(x => {
+                            // old logic for fetching cases data just in case they change the layout back
+                            
                             // if (!x.children[1].children[0].hasOwnProperty("children")) {
                             //     if(x.children[1].children[0].data.trim() == country)
                             //         return true;
@@ -204,6 +210,8 @@ const mapCountriesDataIso = async countries => {
                         .filter(x => Boolean(x.children.length))
                         .slice(8)
                         .filter(x => {
+                            // old logic for fetching cases data just in case they change the layout back
+                            
                             // if (!x.children[1].children[0].hasOwnProperty("children")) {
                             //     if(x.children[1].children[0].data.trim() == country)
                             //         return true;
