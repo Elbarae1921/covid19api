@@ -1,7 +1,7 @@
 # covid19api
 [coronavirus worldwide statistics API](https://api19covid.herokuapp.com/)
 
-# :warning:Warning: Bad Code Ahead!
+## :warning:Warning: Bad Code Ahead!
 
 This api scrapes data from [worldometers](https://www.worldometers.info/coronavirus/) for every request (except /daily, it uses file i/o) which makes the provided data very accurate at the cost of loading time.
 
