@@ -11,19 +11,16 @@ const PORT = process.env.PORT || 5000;
 
 const server = express();
 
-server.get('/', (_, res) => {
-    Scraper.getDataArray().then(result => {
-        const data = result.map(r => r.replace(/ /g, ''));
-        Scraper.lastUpdated()
-            .then(lu => {
-                res.json({
-                    "confirmed": data[0],
-                    "recoveries": data[2],
-                    "deaths": data[1],
-                    "last_updated": lu
-                });
-            });    
-    })
+server.get('/', async (_, res) => {
+    const result = await Scraper.getDataArray()
+    const data = result.map(r => r.replace(/ /g, ''));
+    const lu = await Scraper.lastUpdated()
+    res.json({
+        "confirmed": data[0],
+        "recoveries": data[2],
+        "deaths": data[1],
+        "last_updated": lu
+    });
 });
 
 server.get('/map', async (_, res) => {
@@ -49,87 +46,48 @@ server.get('/daily', async (_, res) => {
         res.json({error: "Could not fetch daily data."});
     }
     
-})
+});
 
-server.get('/help', (_, res) => {
+server.get('/countries', async (_, res) => {
+    const countries = await Scraper.getCountriesArray()
     res.json({
-        routes: [
-            {
-                route: "/",
-                desc: "Coronavirus stats worldwide"
-            },
-            {
-                route: "/countries",
-                desc: "Available countries"
-            },
-            {
-                route: "/:country",
-                desc: "Coronavirus stats in the specified country"
-            },
-            {
-                route: "/map",
-                desc: "Coronavirus stats in all the available countries mapped in a key-value pair array with the country's name as the key"
-            },
-            {
-                route: "/map",
-                desc: "Coronavirus stats in all the available countries mapped in a key-value pair array with the country's ISO_A3 code as the key"
-            },
-            {
-                route: "/help",
-                desc: "Help :)"
-            }
-        ]
+        countries
     });
 });
 
-server.get('/countries', (_, res) => {
-    Scraper.getCountriesArray()
-        .then(countries => {
-            res.json({
-                countries
-            });
-        });
-});
-
-server.get('/:country', (req, res) => {
+server.get('/:country', async (req, res) => {
     let country = req.params.country;
     if (country) {
         country = country.replace(/\s/g, "");
-        Scraper.getCountriesArray()
-            .then(countries => {
-                const query = countries.find(c => c.replace(/\s/g, "") === country);
-                if (query) {
-                    Scraper.getCountryDataArray(query)
-                        .then(result => {
-                            console.log(result);
-                            const data = result.map(r => r.replace(/ /g, ''));
-                            Scraper.lastUpdated()
-                                .then(lu => {
-                                    res.json({
-                                        "country": query,
-                                        "iso3": isoMap.get(query),
-                                        "confirmed": data[0],
-                                        "new_cases": data[1],
-                                        "deaths": data[2],
-                                        "new_deaths": data[3],
-                                        "recoveries": data[4],
-                                        "active_cases": data[5],
-                                        "serious_cases": data[6],
-                                        "tot_cases/1M_pop": data[7],
-                                        "tot_deaths/1M_pop": data[8],
-                                        "total_tests": data[9],
-                                        "tests/1M_pop": data[10],
-                                        "last_updated": lu
-                                    });
-                                });
-                        });
-                }
-                else {
-                    res.json({
-                        error: "No info on the provided country"
-                    });
-                }
+        const countries = await Scraper.getCountriesArray()
+        const query = countries.find(c => c.replace(/\s/g, "") === country);
+        if (query) {
+            const result = await Scraper.getCountryDataArray(query)
+            console.log(result);
+            const data = result.map(r => r.replace(/ /g, ''));
+            const lu = await Scraper.lastUpdated()
+            res.json({
+                "country": query,
+                "iso3": isoMap.get(query),
+                "confirmed": data[0],
+                "new_cases": data[1],
+                "deaths": data[2],
+                "new_deaths": data[3],
+                "recoveries": data[4],
+                "active_cases": data[5],
+                "serious_cases": data[6],
+                "tot_cases/1M_pop": data[7],
+                "tot_deaths/1M_pop": data[8],
+                "total_tests": data[9],
+                "tests/1M_pop": data[10],
+                "last_updated": lu
             });
+        }
+        else {
+            res.json({
+                error: "No info on the provided country"
+            });
+        }
     }
     else {
         res.json({
