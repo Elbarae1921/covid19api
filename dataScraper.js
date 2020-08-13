@@ -210,40 +210,6 @@ const getDaily = async () => {
     return dailyData;
 }
 
-const getCasesChart = () => {
-    return new Promise(async resolve => {
-        const browser = await puppeteer.launch();
-        const page = await  browser.newPage();
-        await page.goto(url);
-
-        const svg = await page.evaluate(() => {
-            return document.getElementById("coronavirus-cases-linear").firstElementChild.innerHTML;
-        });
-
-        svg2img(svg, (err, buffer) => {
-            if(err) resolve("failed");
-            resolve(buffer);
-        })
-    });    
-}
-
-const getDeathsChart = () => {
-    return new Promise(async resolve => {
-        const browser = await puppeteer.launch();
-        const page = await  browser.newPage();
-        await page.goto(url);
-
-        const svg = await page.evaluate(() => {
-            return document.getElementById("coronavirus-deaths-linear").firstElementChild.innerHTML;
-        });
-
-        svg2img(svg, (err, buffer) => {
-            if(err) resolve("failed");
-            resolve(buffer);
-        })
-    });    
-}
-
 module.exports = {
     getCountriesArray,
     getDataArray,
@@ -251,7 +217,5 @@ module.exports = {
     lastUpdated,
     mapCountriesData,
     mapCountriesDataIso,
-    getDaily,
-    getCasesChart,
-    getDeathsChart
+    getDaily
 }

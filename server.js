@@ -2,10 +2,12 @@ require('dotenv').config();
 const express = require('express');
 const schedule = require('node-schedule');
 const updateDaily = require('./updateDaily');
+const updateChart = require('./updateChart');
 const Scraper = require('./dataScraper');
 const isoMap = new Map(require('./iso3.json'));
 
-const job = schedule.scheduleJob({hour: 23, minute: 58}, updateDaily);
+const dataJob = schedule.scheduleJob({hour: 23, minute: 58}, updateDaily);
+const chartJob = schedule.scheduleJob({hour: 23, minute: 58}, updateChart);
 
 const PORT = process.env.PORT || 5000;
 
@@ -24,21 +26,11 @@ server.get('/', async (_, res) => {
 });
 
 server.get('/chart_cases', async (_, res) => {
-    const buffer = await Scraper.getCasesChart();
-
-    res.set('content-disposition', 'attachement; filename=total_cases_chart.png')
-    res.set('Content-Type', 'image/png');
-
-    res.end(buffer);
+    res.sendFile(__dirname+'/total_cases_chart.png');
 });
 
 server.get('/chart_deaths', async (_, res) => {
-    const buffer = await Scraper.getDeathsChart();
-
-    res.set('content-disposition', 'attachement; filename=total_deaths_chart.png')
-    res.set('Content-Type', 'image/png');
-
-    res.end(buffer);
+    res.sendFile(__dirname+'/total_deaths_chart.png');
 });
 
 server.get('/map', async (_, res) => {
