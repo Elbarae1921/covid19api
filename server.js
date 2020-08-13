@@ -23,10 +23,19 @@ server.get('/', async (_, res) => {
     });
 });
 
-server.get('/chart', async (_, res) => {
-    const buffer = await Scraper.getChart();
+server.get('/chart_cases', async (_, res) => {
+    const buffer = await Scraper.getCasesChart();
 
     res.set('content-disposition', 'attachement; filename=total_cases_chart.png')
+    res.set('Content-Type', 'image/png');
+
+    res.end(buffer);
+});
+
+server.get('/chart_deaths', async (_, res) => {
+    const buffer = await Scraper.getDeathsChart();
+
+    res.set('content-disposition', 'attachement; filename=total_deaths_chart.png')
     res.set('Content-Type', 'image/png');
 
     res.end(buffer);
@@ -64,7 +73,7 @@ server.get('/countries', async (_, res) => {
     });
 });
 
-server.get('/:country', async (req, res) => {
+server.get('/country/:country', async (req, res) => {
     let country = req.params.country;
     if (country) {
         country = country.replace(/\s/g, "");
@@ -117,7 +126,7 @@ server.get('/*', (_, res) => {
                 desc: "Available countries"
             },
             {
-                route: "/:country",
+                route: "/country/:country",
                 desc: "Coronavirus stats in the specified country"
             },
             {
@@ -129,8 +138,12 @@ server.get('/*', (_, res) => {
                 desc: "Coronavirus stats in all the available countries mapped in a key-value pair array with the country's ISO_A3 code as the key"
             },
             {
-                route: "/help",
-                desc: "Help :)"
+                route: "/chart_cases",
+                desc: "A linear chart demonstrating the number of cases x time"
+            },
+            {
+                route: "/chart_deaths",
+                desc: "A linear chart demonstrating the number of deaths x time"
             }
         ]
     });
