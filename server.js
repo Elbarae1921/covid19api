@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const schedule = require('node-schedule');
+const stream = require('stream');
 const updateDaily = require('./updateDaily');
 const Scraper = require('./dataScraper');
 const isoMap = new Map(require('./iso3.json'));
@@ -21,6 +22,18 @@ server.get('/', async (_, res) => {
         "deaths": data[1],
         "last_updated": lu
     });
+});
+
+server.get('/chart', async (_, res) => {
+    const buffer = await Scraper.getChart();
+
+    const readStream = new stream.PassThrough();
+    readStream.end(buffer);
+
+    res.set('content-disposition', 'attachement; filename=total_cases_chart.png')
+    res.set('Content-Type', 'image/png');
+
+    readStream.pipe(res);
 });
 
 server.get('/map', async (_, res) => {

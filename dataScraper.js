@@ -1,5 +1,7 @@
 const fs = require('fs/promises');
 const rp = require("request-promise");
+const puppeteer = require("puppeteer");
+const svg2img = require("svg2img");
 const $ = require("cheerio");
 const iso3 = new Map(require('./iso3.json'));
 
@@ -79,7 +81,9 @@ const getCountryDataArray = async country => {
                     return false;
             });
         for(let i = 5; i < 26; i+=2) {
+            if(i === 15) continue;
             dataArray.push(vals[0].children[i].hasOwnProperty("children") ? vals[0].children[i].children.length > 0 ?  vals[0].children[i].children[0].data : "" : "");
+            console.log(i, vals[0].children[i].hasOwnProperty("children") ? vals[0].children[i].children.length > 0 ?  vals[0].children[i].children[0].data : "" : "");
         }
         return dataArray;
     }
@@ -206,6 +210,23 @@ const getDaily = async () => {
     return dailyData;
 }
 
+const getChart = () => {
+    return new Promise(async resolve => {
+        const browser = await puppeteer.launch();
+        const page = await  browser.newPage();
+        await page.goto(url);
+
+        const svg = await page.evaluate(() => {
+            return document.getElementById("coronavirus-cases-linear").firstElementChild.innerHTML;
+        });
+
+        svg2img(svg, (err, buffer) => {
+            if(err) resolve("failed");
+            resolve(buffer);
+        })
+    });    
+}
+
 module.exports = {
     getCountriesArray,
     getDataArray,
@@ -213,5 +234,6 @@ module.exports = {
     lastUpdated,
     mapCountriesData,
     mapCountriesDataIso,
-    getDaily
+    getDaily,
+    getChart
 }
