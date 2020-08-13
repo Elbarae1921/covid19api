@@ -26,11 +26,11 @@ server.get('/', async (_, res) => {
 });
 
 server.get('/chart_cases', async (_, res) => {
-    res.sendFile(__dirname+'/total_cases_chart.png');
+    res.download(__dirname+'/total_cases_chart.png');
 });
 
 server.get('/chart_deaths', async (_, res) => {
-    res.sendFile(__dirname+'/total_deaths_chart.png');
+    res.download(__dirname+'/total_deaths_chart.png');
 });
 
 server.get('/map', async (_, res) => {
