@@ -23,7 +23,7 @@
     "svg2img": "^0.8.1"
   },
   "devDependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "csv-writer": "^1.6.0"
   }
 }
